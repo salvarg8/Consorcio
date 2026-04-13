@@ -11,20 +11,20 @@ import java.util.stream.Collectors;
 @Component
 public class UsuarioMapper {
 
-    public static Usuario toEntity(UsuarioRequestDTO dto) {
+    public Usuario toEntity(UsuarioRequestDTO dto) {
         if (dto == null) {
             return null;
         }
         return Usuario.builder()
-                .nombre(dto.getNombre())
-                .apellido(dto.getApellido())
-                .email(dto.getEmail())
-                .password(dto.getPassword())
-                .rol(dto.getRol())
+                .nombre(dto.nombre())
+                .apellido(dto.apellido())
+                .email(dto.email())
+                .password(dto.password())
+                .rol(dto.rol())
                 .build();
     }
 
-    public static UsuarioResponseDTO toResponseDTO(Usuario entity) {
+    public UsuarioResponseDTO toResponseDTO(Usuario entity) {
         if (entity == null) {
             return null;
         }

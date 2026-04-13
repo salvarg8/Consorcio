@@ -2,10 +2,12 @@ package com.consorcio.gestion.service;
 
 import com.consorcio.gestion.dto.PagoPendienteRequestDTO;
 import com.consorcio.gestion.dto.PagoPendienteResponseDTO;
+import com.consorcio.gestion.entity.Consorcio;
 import com.consorcio.gestion.entity.PagoPendiente;
 import com.consorcio.gestion.entity.UnidadFuncional;
 import com.consorcio.gestion.enums.EstadoPago;
 import com.consorcio.gestion.exception.BusinessException;
+import com.consorcio.gestion.mapper.PagoPendienteMapper;
 import com.consorcio.gestion.repository.PagoPendienteRepository;
 import com.consorcio.gestion.repository.UnidadFuncionalRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -32,12 +35,17 @@ public class PagoPendienteServiceTest {
     @Mock
     private UnidadFuncionalRepository unidadFuncionalRepository;
 
+    @Spy
+    private PagoPendienteMapper pagoPendienteMapper;
+
     @InjectMocks
     private PagoPendienteService pagoPendienteService;
 
     private PagoPendienteRequestDTO requestDTO;
     private PagoPendiente pagoEntity;
     private UnidadFuncional unidad;
+    private Consorcio consorcio;
+    private final Long consorcioId = 1L;
 
     @BeforeEach
     void setUp() {
@@ -45,10 +53,13 @@ public class PagoPendienteServiceTest {
                 1L, "Expensas", "Octubre", BigDecimal.valueOf(15000), LocalDate.now().plusDays(10)
         );
 
+        consorcio = new Consorcio(1L, "Consorcio Test", "Calle 123", "30-12345678-9", true, null, null, null, null);
+
         unidad = UnidadFuncional.builder()
                 .id(1L)
                 .identificador("1A")
                 .activa(true)
+                .consorcio(consorcio)
                 .build();
 
         pagoEntity = PagoPendiente.builder()
@@ -62,13 +73,13 @@ public class PagoPendienteServiceTest {
 
     @Test
     void create_Exito_EstadoPendiente() {
-        when(unidadFuncionalRepository.findById(1L)).thenReturn(Optional.of(unidad));
+        when(unidadFuncionalRepository.findByIdAndConsorcioId(1L, consorcioId)).thenReturn(Optional.of(unidad));
         when(pagoRepository.save(any(PagoPendiente.class))).thenReturn(pagoEntity);
 
-        PagoPendienteResponseDTO response = pagoPendienteService.create(requestDTO);
+        PagoPendienteResponseDTO response = pagoPendienteService.create(requestDTO, consorcioId);
 
         assertNotNull(response);
-        assertEquals(EstadoPago.PENDIENTE, response.getEstado());
+        assertEquals(EstadoPago.PENDIENTE, response.estado());
         verify(pagoRepository, times(1)).save(any(PagoPendiente.class));
     }
 
@@ -81,25 +92,25 @@ public class PagoPendienteServiceTest {
         PagoPendiente pagoVencidoEntity = PagoPendiente.builder()
                 .id(1L)
                 .unidadFuncional(unidad)
-                .fechaVencimiento(requestVencido.getFechaVencimiento())
+                .fechaVencimiento(requestVencido.fechaVencimiento())
                 .estado(EstadoPago.VENCIDO)
                 .build();
 
-        when(unidadFuncionalRepository.findById(1L)).thenReturn(Optional.of(unidad));
+        when(unidadFuncionalRepository.findByIdAndConsorcioId(1L, consorcioId)).thenReturn(Optional.of(unidad));
         when(pagoRepository.save(any(PagoPendiente.class))).thenReturn(pagoVencidoEntity);
 
-        PagoPendienteResponseDTO response = pagoPendienteService.create(requestVencido);
+        PagoPendienteResponseDTO response = pagoPendienteService.create(requestVencido, consorcioId);
 
         assertNotNull(response);
-        assertEquals(EstadoPago.VENCIDO, response.getEstado());
+        assertEquals(EstadoPago.VENCIDO, response.estado());
     }
 
     @Test
     void pay_Exito() {
-        when(pagoRepository.findById(1L)).thenReturn(Optional.of(pagoEntity));
+        when(pagoRepository.findByIdAndConsorcioId(1L, consorcioId)).thenReturn(Optional.of(pagoEntity));
         when(pagoRepository.save(any(PagoPendiente.class))).thenReturn(pagoEntity);
 
-        pagoPendienteService.pay(1L);
+        pagoPendienteService.pay(1L, consorcioId);
 
         assertEquals(EstadoPago.PAGADO, pagoEntity.getEstado());
         assertNotNull(pagoEntity.getFechaPago());
@@ -109,10 +120,10 @@ public class PagoPendienteServiceTest {
     @Test
     void pay_YaPagado_LanzaBusinessException() {
         pagoEntity.setEstado(EstadoPago.PAGADO);
-        when(pagoRepository.findById(1L)).thenReturn(Optional.of(pagoEntity));
+        when(pagoRepository.findByIdAndConsorcioId(1L, consorcioId)).thenReturn(Optional.of(pagoEntity));
 
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            pagoPendienteService.pay(1L);
+            pagoPendienteService.pay(1L, consorcioId);
         });
 
         assertEquals("El pago ya ha sido procesado anteriormente", exception.getMessage());

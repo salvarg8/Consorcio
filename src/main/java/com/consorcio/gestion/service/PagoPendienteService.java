@@ -29,23 +29,24 @@ public class PagoPendienteService {
 
     @Transactional
     public PagoPendienteResponseDTO create(PagoPendienteRequestDTO request, Long consorcioId) {
-        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.getUnidadFuncionalId(), consorcioId)
+        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.unidadFuncionalId(),
+                        consorcioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Unidad Funcional no encontrada en este consorcio"));
 
         if (!unidad.isActiva()) {
             throw new BusinessException("No se puede crear un pago para una unidad inactiva");
         }
 
-        EstadoPago estadoInicial = LocalDate.now().isAfter(request.getFechaVencimiento()) 
+        EstadoPago estadoInicial = LocalDate.now().isAfter(request.fechaVencimiento())
                 ? EstadoPago.VENCIDO 
                 : EstadoPago.PENDIENTE;
 
         PagoPendiente pago = PagoPendiente.builder()
                 .unidadFuncional(unidad)
-                .concepto(request.getConcepto())
-                .descripcion(request.getDescripcion())
-                .monto(request.getMonto())
-                .fechaVencimiento(request.getFechaVencimiento())
+                .concepto(request.concepto())
+                .descripcion(request.descripcion())
+                .monto(request.monto())
+                .fechaVencimiento(request.fechaVencimiento())
                 .estado(estadoInicial)
                 .build();
 

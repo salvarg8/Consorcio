@@ -14,13 +14,15 @@ public class InfraccionMapper {
         return InfraccionResponseDTO.builder()
                 .id(entity.getId())
                 .unidadFuncionalId(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getId() : null)
-                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getIdentificador() : null)
+                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional()
+                        .getIdentificador() : null)
                 .fecha(entity.getFecha())
                 .motivo(entity.getMotivo())
                 .descripcion(entity.getDescripcion())
                 .montoPenalizacion(entity.getMontoPenalizacion())
                 .estado(entity.getEstado())
-                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null ? entity.getUnidadFuncional().getConsorcio().getId() : null)
+                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null ?
+                        entity.getUnidadFuncional().getConsorcio().getId() : null)
                 .build();
     }
 }

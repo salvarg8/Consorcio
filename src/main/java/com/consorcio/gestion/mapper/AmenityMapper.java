@@ -13,9 +13,9 @@ public class AmenityMapper {
             return null;
         }
         return Amenity.builder()
-                .nombre(dto.getNombre())
-                .descripcion(dto.getDescripcion())
-                .capacidadMaxima(dto.getCapacidadMaxima())
+                .nombre(dto.nombre())
+                .descripcion(dto.descripcion())
+                .capacidadMaxima(dto.capacidadMaxima())
                 .build();
     }
 

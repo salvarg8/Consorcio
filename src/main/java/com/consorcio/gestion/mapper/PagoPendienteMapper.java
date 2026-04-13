@@ -14,14 +14,16 @@ public class PagoPendienteMapper {
         return PagoPendienteResponseDTO.builder()
                 .id(entity.getId())
                 .unidadFuncionalId(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getId() : null)
-                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getIdentificador() : null)
+                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional()
+                        .getIdentificador() : null)
                 .concepto(entity.getConcepto())
                 .descripcion(entity.getDescripcion())
                 .monto(entity.getMonto())
                 .fechaVencimiento(entity.getFechaVencimiento())
                 .estado(entity.getEstado())
                 .fechaPago(entity.getFechaPago())
-                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null ? entity.getUnidadFuncional().getConsorcio().getId() : null)
+                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null
+                        ? entity.getUnidadFuncional().getConsorcio().getId() : null)
                 .build();
     }
 }

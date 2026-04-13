@@ -1,6 +1,5 @@
 package com.consorcio.gestion.security;
 
-import com.consorcio.gestion.entity.Consorcio;
 import com.consorcio.gestion.entity.UnidadFuncional;
 import com.consorcio.gestion.entity.Usuario;
 import com.consorcio.gestion.exception.BusinessException;

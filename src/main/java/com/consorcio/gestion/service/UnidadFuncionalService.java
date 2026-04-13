@@ -24,55 +24,40 @@ public class UnidadFuncionalService {
     private final UnidadFuncionalRepository unidadFuncionalRepository;
     private final ConsorcioRepository consorcioRepository;
     private final UsuarioRepository usuarioRepository;
+    private final UnidadFuncionalMapper unidadFuncionalMapper;
 
     @Transactional
-    public UnidadFuncionalResponseDTO create(UnidadFuncionalRequestDTO request) {
-        if (request.getConsorcioId() == null) {
-            throw new BusinessException("El consorcioId es obligatorio");
-        }
+    public UnidadFuncionalResponseDTO create(UnidadFuncionalRequestDTO request, Long consorcioId) {
+        Consorcio consorcio = consorcioRepository.findById(consorcioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + consorcioId));
 
-        Consorcio consorcio = consorcioRepository.findById(request.getConsorcioId())
-                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + request.getConsorcioId()));
-
-        if (unidadFuncionalRepository.existsByIdentificadorAndConsorcioId(request.getIdentificador(), request.getConsorcioId())) {
+        if (unidadFuncionalRepository.existsByIdentificadorAndConsorcioId(request.getIdentificador(), consorcioId)) {
             throw new BusinessException("El identificador de la unidad funcional ya existe para este consorcio");
         }
 
-        UnidadFuncional unidad = UnidadFuncionalMapper.toEntity(request);
+        UnidadFuncional unidad = unidadFuncionalMapper.toEntity(request);
         unidad.setConsorcio(consorcio);
-        return UnidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
-    }
-
-    @Transactional(readOnly = true)
-    public Page<UnidadFuncionalResponseDTO> findAll(Pageable pageable) {
-        return unidadFuncionalRepository.findAll(pageable)
-                .map(UnidadFuncionalMapper::toResponseDTO);
+        return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 
     @Transactional(readOnly = true)
     public Page<UnidadFuncionalResponseDTO> findAllByConsorcioId(Long consorcioId, Pageable pageable) {
         return unidadFuncionalRepository.findByConsorcioId(consorcioId, pageable)
-                .map(UnidadFuncionalMapper::toResponseDTO);
+                .map(unidadFuncionalMapper::toResponseDTO);
     }
 
     @Transactional(readOnly = true)
-    public UnidadFuncionalResponseDTO findById(Long id) {
-        UnidadFuncional unidad = getUnidadFuncionalEntity(id);
-        return UnidadFuncionalMapper.toResponseDTO(unidad);
+    public UnidadFuncionalResponseDTO findById(Long id, Long consorcioId) {
+        UnidadFuncional unidad = getUnidadFuncionalEntityByConsorcio(id, consorcioId);
+        return unidadFuncionalMapper.toResponseDTO(unidad);
     }
 
     @Transactional
-    public UnidadFuncionalResponseDTO update(Long id, UnidadFuncionalRequestDTO request) {
-        UnidadFuncional unidad = getUnidadFuncionalEntity(id);
-
-        if (request.getConsorcioId() != null && !unidad.getConsorcio().getId().equals(request.getConsorcioId())) {
-             Consorcio consorcio = consorcioRepository.findById(request.getConsorcioId())
-                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + request.getConsorcioId()));
-             unidad.setConsorcio(consorcio);
-        }
+    public UnidadFuncionalResponseDTO update(Long id, UnidadFuncionalRequestDTO request, Long consorcioId) {
+        UnidadFuncional unidad = getUnidadFuncionalEntityByConsorcio(id, consorcioId);
 
         if (!unidad.getIdentificador().equals(request.getIdentificador()) &&
-                unidadFuncionalRepository.existsByIdentificadorAndConsorcioId(request.getIdentificador(), unidad.getConsorcio().getId())) {
+                unidadFuncionalRepository.existsByIdentificadorAndConsorcioId(request.getIdentificador(), consorcioId)) {
             throw new BusinessException("El nuevo identificador ya está en uso para este consorcio");
         }
 
@@ -80,19 +65,19 @@ public class UnidadFuncionalService {
         unidad.setPiso(request.getPiso());
         unidad.setDescripcion(request.getDescripcion());
 
-        return UnidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
+        return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 
     @Transactional
-    public void delete(Long id) {
-        UnidadFuncional unidad = getUnidadFuncionalEntity(id);
+    public void delete(Long id, Long consorcioId) {
+        UnidadFuncional unidad = getUnidadFuncionalEntityByConsorcio(id, consorcioId);
         unidad.setActiva(false);
         unidadFuncionalRepository.save(unidad);
     }
 
     @Transactional
-    public UnidadFuncionalResponseDTO assignOwner(Long unitId, Long userId) {
-        UnidadFuncional unidad = getUnidadFuncionalEntity(unitId);
+    public UnidadFuncionalResponseDTO assignOwner(Long unitId, Long userId, Long consorcioId) {
+        UnidadFuncional unidad = getUnidadFuncionalEntityByConsorcio(unitId, consorcioId);
 
         Usuario propietario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + userId));
@@ -102,12 +87,12 @@ public class UnidadFuncionalService {
         }
 
         unidad.setPropietario(propietario);
-        return UnidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
+        return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 
     @Transactional
-    public UnidadFuncionalResponseDTO assignInquilino(Long unitId, Long userId) {
-        UnidadFuncional unidad = getUnidadFuncionalEntity(unitId);
+    public UnidadFuncionalResponseDTO assignInquilino(Long unitId, Long userId, Long consorcioId) {
+        UnidadFuncional unidad = getUnidadFuncionalEntityByConsorcio(unitId, consorcioId);
 
         Usuario inquilino = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con ID: " + userId));
@@ -117,11 +102,11 @@ public class UnidadFuncionalService {
         }
 
         unidad.setInquilino(inquilino);
-        return UnidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
+        return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 
-    public UnidadFuncional getUnidadFuncionalEntity(Long id) {
-        return unidadFuncionalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Unidad Funcional no encontrada con ID: " + id));
+    public UnidadFuncional getUnidadFuncionalEntityByConsorcio(Long id, Long consorcioId) {
+        return unidadFuncionalRepository.findByIdAndConsorcioId(id, consorcioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Unidad Funcional no encontrada con ID: " + id + " en este consorcio"));
     }
 }

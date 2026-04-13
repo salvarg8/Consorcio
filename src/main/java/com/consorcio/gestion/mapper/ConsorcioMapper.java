@@ -30,6 +30,7 @@ public class ConsorcioMapper {
                 .nombre(entity.getNombre())
                 .direccion(entity.getDireccion())
                 .cuit(entity.getCuit())
+                .activo(entity.isActivo())
                 .build();
     }
 }

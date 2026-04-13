@@ -27,7 +27,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioResponseDTO create(UsuarioRequestDTO request, Long consorcioId) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+        if (usuarioRepository.existsByEmail(request.email())) {
             throw new BusinessException("El email ya está registrado");
         }
 
@@ -35,7 +35,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + consorcioId));
 
         Usuario usuario = usuarioMapper.toEntity(request);
-        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setPassword(passwordEncoder.encode(request.password()));
         usuario.getConsorcios().add(consorcio);
         
         Usuario saved = usuarioRepository.save(usuario);
@@ -58,17 +58,17 @@ public class UsuarioService {
     public UsuarioResponseDTO update(Long id, UsuarioRequestDTO request, Long consorcioId) {
         Usuario usuario = getUsuarioEntityByConsorcio(id, consorcioId);
 
-        if (!usuario.getEmail().equals(request.getEmail()) && usuarioRepository.existsByEmail(request.getEmail())) {
+        if (!usuario.getEmail().equals(request.email()) && usuarioRepository.existsByEmail(request.email())) {
             throw new BusinessException("El nuevo email ya está en uso");
         }
 
-        usuario.setNombre(request.getNombre());
-        usuario.setApellido(request.getApellido());
-        usuario.setEmail(request.getEmail());
-        usuario.setRol(request.getRol());
+        usuario.setNombre(request.nombre());
+        usuario.setApellido(request.apellido());
+        usuario.setEmail(request.email());
+        usuario.setRol(request.rol());
         
-        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
-            usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        if (request.password() != null && !request.password().trim().isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(request.password()));
         }
 
         return usuarioMapper.toResponseDTO(usuarioRepository.save(usuario));

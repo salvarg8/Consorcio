@@ -23,6 +23,7 @@ public class AuthService {
     private final UsuarioRepository usuarioRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final UsuarioMapper mapper;
 
     /**
      * Autentica a un usuario utilizando sus credenciales (email y contraseña).
@@ -37,12 +38,12 @@ public class AuthService {
     public AuthResponseDTO login(AuthRequestDTO request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
+                        request.email(),
+                        request.password()
                 )
         );
 
-        Usuario user = usuarioRepository.findByEmail(request.getEmail())
+        Usuario user = usuarioRepository.findByEmail(request.email())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
         if (!user.isActivo()) {
@@ -65,7 +66,7 @@ public class AuthService {
 
         return AuthResponseDTO.builder()
                 .token(jwtToken)
-                .usuario(UsuarioMapper.toResponseDTO(user))
+                .usuario(mapper.toResponseDTO(user))
                 .build();
     }
 }

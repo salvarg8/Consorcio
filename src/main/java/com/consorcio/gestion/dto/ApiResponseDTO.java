@@ -1,37 +1,36 @@
 package com.consorcio.gestion.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ApiResponseDTO<T> {
-    @Builder.Default
-    private LocalDateTime timestamp = LocalDateTime.now();
-    private int status;
-    private String message;
-    private T data;
+public record ApiResponseDTO<T>(
+        LocalDateTime timestamp,
+        int status,
+        String message,
+        T data
+) {
+    public ApiResponseDTO {
+        if (timestamp == null) {
+            timestamp = LocalDateTime.now();
+        }
+    }
 
-    // Método estático de conveniencia para respuestas exitosas (HTTP 200 OK)
     public static <T> ApiResponseDTO<T> success(T data, String message) {
         return ApiResponseDTO.<T>builder()
-                .status(HttpStatus.OK.value()) // Código de estado HTTP 200
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.OK.value())
                 .message(message)
                 .data(data)
                 .build();
     }
 
-    // Método estático de conveniencia para respuestas de creación (HTTP 201 Created)
     public static <T> ApiResponseDTO<T> created(T data, String message) {
         return ApiResponseDTO.<T>builder()
-                .status(HttpStatus.CREATED.value()) // Código de estado HTTP 201
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CREATED.value())
                 .message(message)
                 .data(data)
                 .build();

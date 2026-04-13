@@ -27,7 +27,8 @@ public class InfraccionService {
 
     @Transactional
     public InfraccionResponseDTO create(InfraccionRequestDTO request, Long consorcioId) {
-        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.getUnidadFuncionalId(), consorcioId)
+        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.unidadFuncionalId(),
+                        consorcioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Unidad Funcional no encontrada en este consorcio"));
 
         if (!unidad.isActiva()) {
@@ -36,10 +37,10 @@ public class InfraccionService {
 
         Infraccion infraccion = Infraccion.builder()
                 .unidadFuncional(unidad)
-                .fecha(request.getFecha())
-                .motivo(request.getMotivo())
-                .descripcion(request.getDescripcion())
-                .montoPenalizacion(request.getMontoPenalizacion())
+                .fecha(request.fecha())
+                .motivo(request.motivo())
+                .descripcion(request.descripcion())
+                .montoPenalizacion(request.montoPenalizacion())
                 .estado(EstadoInfraccion.PENDIENTE)
                 .build();
 
@@ -62,11 +63,11 @@ public class InfraccionService {
     public InfraccionResponseDTO updateStatus(Long id, EstadoInfraccionRequestDTO request, Long consorcioId) {
         Infraccion infraccion = getInfraccionEntityByConsorcio(id, consorcioId);
         
-        if (infraccion.getEstado() == request.getEstado()) {
-            throw new BusinessException("La infracción ya se encuentra en el estado " + request.getEstado());
+        if (infraccion.getEstado() == request.estado()) {
+            throw new BusinessException("La infracción ya se encuentra en el estado " + request.estado());
         }
 
-        infraccion.setEstado(request.getEstado());
+        infraccion.setEstado(request.estado());
         return infraccionMapper.toResponseDTO(infraccionRepository.save(infraccion));
     }
 

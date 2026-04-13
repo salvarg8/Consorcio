@@ -5,6 +5,7 @@ import com.consorcio.gestion.dto.UnidadFuncionalRequestDTO;
 import com.consorcio.gestion.dto.UnidadFuncionalResponseDTO;
 import com.consorcio.gestion.security.SecurityService;
 import com.consorcio.gestion.service.UnidadFuncionalService;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,10 +13,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 @RestController
-@RequestMapping("/api/v1/unidades")
+@RequestMapping("/api/v1/units")
 @RequiredArgsConstructor
 public class UnidadFuncionalController {
 
@@ -30,9 +39,9 @@ public class UnidadFuncionalController {
         Long consorcioId = securityService.getConsorcioIdForCurrentUser();
         request.setConsorcioId(consorcioId);
         
-        UnidadFuncionalResponseDTO response = unidadFuncionalService.create(request);
+        UnidadFuncionalResponseDTO response = unidadFuncionalService.create(request, consorcioId);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                ApiResponseDTO.success(response, "Unidad Funcional creada exitosamente")
+                ApiResponseDTO.created(response, "Unidad Funcional creada exitosamente")
         );
     }
 
@@ -49,9 +58,8 @@ public class UnidadFuncionalController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'ENCARGADO', 'PROPIETARIO', 'INQUILINO')")
     public ResponseEntity<ApiResponseDTO<UnidadFuncionalResponseDTO>> findById(@PathVariable Long id) {
-        // Validación adicional en el service para asegurar que la unidad pertenece
-        // al consorcio del usuario logueado.
-        UnidadFuncionalResponseDTO response = unidadFuncionalService.findById(id);
+        Long consorcioId = securityService.getConsorcioIdForCurrentUser();
+        UnidadFuncionalResponseDTO response = unidadFuncionalService.findById(id, consorcioId);
         return ResponseEntity.ok(
                 ApiResponseDTO.success(response, "Unidad Funcional obtenida exitosamente")
         );
@@ -66,7 +74,7 @@ public class UnidadFuncionalController {
         Long consorcioId = securityService.getConsorcioIdForCurrentUser();
         request.setConsorcioId(consorcioId);
         
-        UnidadFuncionalResponseDTO response = unidadFuncionalService.update(id, request);
+        UnidadFuncionalResponseDTO response = unidadFuncionalService.update(id, request, consorcioId);
         return ResponseEntity.ok(
                 ApiResponseDTO.success(response, "Unidad Funcional actualizada exitosamente")
         );
@@ -75,7 +83,8 @@ public class UnidadFuncionalController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponseDTO<Void>> delete(@PathVariable Long id) {
-        unidadFuncionalService.delete(id);
+        Long consorcioId = securityService.getConsorcioIdForCurrentUser();
+        unidadFuncionalService.delete(id, consorcioId);
         return ResponseEntity.ok(
                 ApiResponseDTO.success(null, "Unidad Funcional desactivada exitosamente")
         );
@@ -86,7 +95,8 @@ public class UnidadFuncionalController {
     public ResponseEntity<ApiResponseDTO<UnidadFuncionalResponseDTO>> assignOwner(
             @PathVariable Long id,
             @PathVariable Long userId) {
-        UnidadFuncionalResponseDTO response = unidadFuncionalService.assignOwner(id, userId);
+        Long consorcioId = securityService.getConsorcioIdForCurrentUser();
+        UnidadFuncionalResponseDTO response = unidadFuncionalService.assignOwner(id, userId, consorcioId);
         return ResponseEntity.ok(
                 ApiResponseDTO.success(response, "Propietario asignado exitosamente")
         );
@@ -97,7 +107,8 @@ public class UnidadFuncionalController {
     public ResponseEntity<ApiResponseDTO<UnidadFuncionalResponseDTO>> assignTenant(
             @PathVariable Long id,
             @PathVariable Long userId) {
-        UnidadFuncionalResponseDTO response = unidadFuncionalService.assignInquilino(id, userId);
+        Long consorcioId = securityService.getConsorcioIdForCurrentUser();
+        UnidadFuncionalResponseDTO response = unidadFuncionalService.assignInquilino(id, userId, consorcioId);
         return ResponseEntity.ok(
                 ApiResponseDTO.success(response, "Inquilino asignado exitosamente")
         );

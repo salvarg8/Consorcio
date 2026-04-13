@@ -14,7 +14,8 @@ public class ReservaMapper {
         return ReservaResponseDTO.builder()
                 .id(entity.getId())
                 .unidadFuncionalId(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getId() : null)
-                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional().getIdentificador() : null)
+                .unidadFuncionalIdentificador(entity.getUnidadFuncional() != null ? entity.getUnidadFuncional()
+                        .getIdentificador() : null)
                 .amenityId(entity.getAmenity() != null ? entity.getAmenity().getId() : null)
                 .amenityNombre(entity.getAmenity() != null ? entity.getAmenity().getNombre() : null)
                 .fecha(entity.getFecha())
@@ -23,7 +24,8 @@ public class ReservaMapper {
                 .estado(entity.getEstado())
                 .observaciones(entity.getObservaciones())
                 .usuarioCreadorEmail(entity.getUsuarioCreador() != null ? entity.getUsuarioCreador().getEmail() : null)
-                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null ? entity.getUnidadFuncional().getConsorcio().getId() : null)
+                .consorcioId(entity.getUnidadFuncional() != null && entity.getUnidadFuncional().getConsorcio() != null ?
+                        entity.getUnidadFuncional().getConsorcio().getId() : null)
                 .build();
     }
 }

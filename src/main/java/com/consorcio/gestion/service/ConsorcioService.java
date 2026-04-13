@@ -56,9 +56,8 @@ public class ConsorcioService {
 
     @Transactional
     public void deleteConsorcio(Long id) {
-        if (!consorcioRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Consorcio no encontrado con id: " + id);
-        }
-        consorcioRepository.deleteById(id);
+        Consorcio consorcio = consorcioRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + id));
+        consorcioRepository.delete(consorcio);
     }
 }

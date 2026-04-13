@@ -36,28 +36,29 @@ public class ReservaAmenityService {
 
     @Transactional
     public ReservaResponseDTO create(ReservaRequestDTO request, Long consorcioId) {
-        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.getUnidadFuncionalId(), consorcioId)
+        UnidadFuncional unidad = unidadFuncionalRepository.findByIdAndConsorcioId(request.unidadFuncionalId(),
+                        consorcioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Unidad Funcional no encontrada en este consorcio"));
 
         if (!unidad.isActiva()) {
             throw new BusinessException("No se puede crear una reserva para una unidad inactiva");
         }
 
-        Amenity amenity = amenityRepository.findByIdAndConsorcioId(request.getAmenityId(), consorcioId)
+        Amenity amenity = amenityRepository.findByIdAndConsorcioId(request.amenityId(), consorcioId)
                 .orElseThrow(() -> new ResourceNotFoundException("Amenity no encontrado en este consorcio"));
 
         if (!amenity.isHabilitado()) {
             throw new BusinessException("El amenity no está habilitado para reservas");
         }
 
-        if (!request.getHoraFin().isAfter(request.getHoraInicio())) {
+        if (!request.horaFin().isAfter(request.horaInicio())) {
             throw new BusinessException("La hora de fin debe ser posterior a la hora de inicio");
         }
 
         // Validación de superposición
         List<ReservaAmenity> reservasDelDia = reservaRepository.findAll().stream()
                 .filter(r -> r.getAmenity().getId().equals(amenity.getId()))
-                .filter(r -> r.getFecha().equals(request.getFecha()))
+                .filter(r -> r.getFecha().equals(request.fecha()))
                 .filter(r -> r.getEstado() != EstadoReserva.CANCELADA)
                 .toList();
 
@@ -74,10 +75,10 @@ public class ReservaAmenityService {
         ReservaAmenity reserva = ReservaAmenity.builder()
                 .unidadFuncional(unidad)
                 .amenity(amenity)
-                .fecha(request.getFecha())
-                .horaInicio(request.getHoraInicio())
-                .horaFin(request.getHoraFin())
-                .observaciones(request.getObservaciones())
+                .fecha(request.fecha())
+                .horaInicio(request.horaInicio())
+                .horaFin(request.horaFin())
+                .observaciones(request.observaciones())
                 .estado(EstadoReserva.PENDIENTE)
                 .usuarioCreador(creador)
                 .build();
@@ -86,8 +87,8 @@ public class ReservaAmenityService {
     }
 
     private boolean isOverlap(ReservaRequestDTO request, ReservaAmenity existente) {
-        return request.getHoraInicio().isBefore(existente.getHoraFin()) &&
-               request.getHoraFin().isAfter(existente.getHoraInicio());
+        return request.horaInicio().isBefore(existente.getHoraFin()) &&
+               request.horaFin().isAfter(existente.getHoraInicio());
     }
 
     @Transactional(readOnly = true)
