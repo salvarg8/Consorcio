@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,9 @@ public class Amenity {
     private String nombre;
 
     private String descripcion;
+
+    @Column(name = "costo", nullable = false)
+    private BigDecimal costo;
 
     @Column(name = "capacidad_maxima")
     private Integer capacidadMaxima;

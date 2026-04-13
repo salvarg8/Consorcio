@@ -20,6 +20,7 @@ public class UnidadFuncionalMapper {
                 .identificador(dto.getIdentificador())
                 .piso(dto.getPiso())
                 .descripcion(dto.getDescripcion())
+                .coeficiente(dto.getCoeficiente())
                 .build();
     }
 
@@ -32,6 +33,7 @@ public class UnidadFuncionalMapper {
                 .identificador(entity.getIdentificador())
                 .piso(entity.getPiso())
                 .descripcion(entity.getDescripcion())
+                .coeficiente(entity.getCoeficiente())
                 .activa(entity.isActiva())
                 .consorcioId(entity.getConsorcio() != null ? entity.getConsorcio().getId() : null)
                 .propietario(entity.getPropietario() != null ? usuarioMapper.toResponseDTO(entity.getPropietario()) : null)

@@ -64,6 +64,7 @@ public class UnidadFuncionalService {
         unidad.setIdentificador(request.getIdentificador());
         unidad.setPiso(request.getPiso());
         unidad.setDescripcion(request.getDescripcion());
+        unidad.setCoeficiente(request.getCoeficiente());
 
         return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }

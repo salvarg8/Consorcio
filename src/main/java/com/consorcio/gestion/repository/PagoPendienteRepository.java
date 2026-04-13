@@ -17,4 +17,6 @@ public interface PagoPendienteRepository extends JpaRepository<PagoPendiente, Lo
 
     @Query("SELECT p FROM PagoPendiente p WHERE p.id = :id AND p.unidadFuncional.consorcio.id = :consorcioId")
     Optional<PagoPendiente> findByIdAndConsorcioId(@Param("id") Long id, @Param("consorcioId") Long consorcioId);
+
+    boolean existsByUnidadFuncionalIdAndConcepto(Long unidadFuncionalId, String concepto);
 }

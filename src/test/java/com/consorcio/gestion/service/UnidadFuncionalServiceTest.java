@@ -7,7 +7,6 @@ import com.consorcio.gestion.entity.Consorcio;
 import com.consorcio.gestion.entity.UnidadFuncional;
 import com.consorcio.gestion.entity.Usuario;
 import com.consorcio.gestion.exception.BusinessException;
-import com.consorcio.gestion.exception.ResourceNotFoundException;
 import com.consorcio.gestion.mapper.UnidadFuncionalMapper;
 import com.consorcio.gestion.mapper.UsuarioMapper;
 import com.consorcio.gestion.repository.ConsorcioRepository;
@@ -21,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -64,6 +64,7 @@ public class UnidadFuncionalServiceTest {
             .piso(1)
             .descripcion("Frente")
             .consorcioId(1L)
+            .coeficiente(new BigDecimal("0.5"))
             .build();
 
         consorcio = new Consorcio(1L, "Consorcio 1", "Calle 1", "CUIT", true, null, null, null, null);
@@ -73,6 +74,7 @@ public class UnidadFuncionalServiceTest {
                 .identificador("1A")
                 .piso(1)
                 .descripcion("Frente")
+                .coeficiente(new BigDecimal("0.5"))
                 .activa(true)
                 .consorcio(consorcio)
                 .build();
@@ -92,6 +94,7 @@ public class UnidadFuncionalServiceTest {
                 "1A",
                 1,
                 "Frente",
+                new BigDecimal("0.5"),
                 true,
                 null,
                 null,
@@ -133,6 +136,7 @@ public class UnidadFuncionalServiceTest {
                 "1A",
                 1,
                 "Frente",
+                new BigDecimal("0.5"),
                 true,
                 1L,
                 new UsuarioResponseDTO(

@@ -4,6 +4,7 @@ import com.consorcio.gestion.entity.UnidadFuncional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 import java.util.Optional;
 
 public interface UnidadFuncionalRepository extends JpaRepository<UnidadFuncional, Long> {
@@ -15,4 +16,6 @@ public interface UnidadFuncionalRepository extends JpaRepository<UnidadFuncional
     boolean existsByIdentificadorAndConsorcioId(String identificador, Long consorcioId);
 
     Page<UnidadFuncional> findByConsorcioId(Long consorcioId, Pageable pageable);
+
+    List<UnidadFuncional> findAllByConsorcioIdAndActivaTrue(Long consorcioId);
 }
