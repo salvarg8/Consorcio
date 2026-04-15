@@ -67,7 +67,11 @@ public class UnidadFuncionalServiceTest {
             .coeficiente(new BigDecimal("0.5"))
             .build();
 
-        consorcio = new Consorcio(1L, "Consorcio 1", "Calle 1", "CUIT", true, null, null, null, null);
+        consorcio = new Consorcio();
+        consorcio.setId(1L);
+        consorcio.setNombre("Consorcio 1");
+        consorcio.setDireccion("CUIT");
+        consorcio.setActivo(true);
 
         unidadEntity = UnidadFuncional.builder()
                 .id(1L)

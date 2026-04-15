@@ -56,7 +56,12 @@ public class UsuarioServiceTest {
                 "Juan", "Perez", "juan@test.com", "password123", RolUsuario.PROPIETARIO
         );
 
-        consorcio = new Consorcio(1L, "Consorcio 1", "Direccion", "CUIT", true, null, null, null, null);
+        consorcio = new Consorcio();
+        consorcio.setId(1L);
+        consorcio.setNombre("Consorcio 1");
+        consorcio.setDireccion("Direccion");
+        consorcio.setCuit("CUIT");
+        consorcio.setActivo(true);
 
         usuarioEntity = Usuario.builder()
                 .id(1L)

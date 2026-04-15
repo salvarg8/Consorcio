@@ -66,7 +66,13 @@ public class ReservaAmenityServiceTest {
                 1L, 1L, LocalDate.now().plusDays(1), LocalTime.of(10, 0), LocalTime.of(12, 0), "Test"
         );
 
-        consorcio = new Consorcio(1L, "Consorcio 1", "Direccion", "CUIT", true, null, null, null, null);
+        consorcio = new Consorcio();
+        consorcio.setId(1L);
+        consorcio.setNombre("Consorcio 1");
+        consorcio.setDireccion("Direccion");
+        consorcio.setCuit("CUIT");
+        consorcio.setActivo(true);
+
 
         unidad = UnidadFuncional.builder().id(1L).activa(true).identificador("1A").consorcio(consorcio).build();
         amenity = Amenity.builder().id(1L).habilitado(true).nombre("SUM").build();

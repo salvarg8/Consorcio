@@ -54,7 +54,12 @@ public class InfraccionServiceTest {
                 1L, LocalDate.now(), "Ruidos", "Música alta", BigDecimal.valueOf(5000)
         );
 
-        consorcio = new Consorcio(1L, "Consorcio Test", "Calle 123", "30-12345678-9", true, null, null, null, null);
+        consorcio = new Consorcio();
+        consorcio.setId(1l);
+        consorcio.setNombre("Consorcio Test");
+        consorcio.setDireccion("Calle 123");
+        consorcio.setCuit("30-12345678-9");
+        consorcio.setActivo(true);
 
         unidad = UnidadFuncional.builder()
                 .id(1L)

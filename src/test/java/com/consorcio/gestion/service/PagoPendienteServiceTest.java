@@ -53,7 +53,12 @@ public class PagoPendienteServiceTest {
                 1L, "Expensas", "Octubre", BigDecimal.valueOf(15000), LocalDate.now().plusDays(10)
         );
 
-        consorcio = new Consorcio(1L, "Consorcio Test", "Calle 123", "30-12345678-9", true, null, null, null, null);
+        Consorcio consorcio = new Consorcio();
+        consorcio.setId(1L);
+        consorcio.setNombre("Consorcio Test");
+        consorcio.setDireccion("Calle 123");
+        consorcio.setCuit("30-12345678-9");
+        consorcio.setActivo(true);
 
         unidad = UnidadFuncional.builder()
                 .id(1L)
