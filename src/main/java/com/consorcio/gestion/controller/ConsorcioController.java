@@ -40,6 +40,13 @@ public class ConsorcioController {
         return ResponseEntity.ok(ApiResponseDTO.success(consorcio, "Consorcio obtenido exitosamente"));
     }
 
+    @GetMapping("/mis-consorcios")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponseDTO<List<Long>>> getMyConsorcioIds() {
+        List<Long> consorcioIds = consorcioService.getConsorcioIdsForAuthenticatedAdmin();
+        return ResponseEntity.ok(ApiResponseDTO.success(consorcioIds, "IDs de consorcios obtenidos exitosamente"));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponseDTO<ConsorcioResponseDTO>> createConsorcio(@RequestBody ConsorcioRequestDTO requestDTO) {
