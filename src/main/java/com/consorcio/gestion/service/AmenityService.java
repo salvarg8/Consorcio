@@ -25,10 +25,11 @@ public class AmenityService {
 
     @Transactional
     public AmenityResponseDTO create(AmenityRequestDTO request, Long consorcioId) {
-        Consorcio consorcio = consorcioRepository.findById(consorcioId)
-                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + consorcioId));
+        Long resolvedConsorcioId = request.consorcioId() != null ? request.consorcioId() : consorcioId;
+        Consorcio consorcio = consorcioRepository.findById(resolvedConsorcioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Consorcio no encontrado con id: " + resolvedConsorcioId));
 
-        if (amenityRepository.existsByNombreAndConsorcioId(request.nombre(), consorcioId)) {
+        if (amenityRepository.existsByNombreAndConsorcioId(request.nombre(), resolvedConsorcioId)) {
             throw new BusinessException("Ya existe un amenity con ese nombre en el consorcio");
         }
 
@@ -61,7 +62,8 @@ public class AmenityService {
         amenity.setNombre(request.nombre());
         amenity.setDescripcion(request.descripcion());
         amenity.setCapacidadMaxima(request.capacidadMaxima());
-        
+        amenity.setCosto(request.costo());
+
         return amenityMapper.toResponseDTO(amenityRepository.save(amenity));
     }
 

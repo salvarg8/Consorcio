@@ -16,6 +16,7 @@ public class AmenityMapper {
                 .nombre(dto.nombre())
                 .descripcion(dto.descripcion())
                 .capacidadMaxima(dto.capacidadMaxima())
+                .costo(dto.costo())
                 .build();
     }
 
@@ -28,6 +29,7 @@ public class AmenityMapper {
                 .nombre(entity.getNombre())
                 .descripcion(entity.getDescripcion())
                 .capacidadMaxima(entity.getCapacidadMaxima())
+                .costo(entity.getCosto())
                 .habilitado(entity.isHabilitado())
                 .consorcioId(entity.getConsorcio() != null ? entity.getConsorcio().getId() : null)
                 .build();

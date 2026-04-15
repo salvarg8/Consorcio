@@ -5,18 +5,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,29 +23,25 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SQLDelete(sql = "UPDATE consorcio SET activo = false WHERE id = ?")
-@Where(clause = "activo = true")
-public class Consorcio {
+@Builder
+public class Administracion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nombre;
-    private String direccion;
-    private String ciudad;
-    private String cuit;
 
-    private boolean activo = true;
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean activa = true;
 
-    @ManyToOne
-    @JoinColumn(name = "administracion_id", nullable = false)
-    private Administracion administracion;
-
-    @OneToMany(mappedBy = "consorcio")
+    @OneToMany(mappedBy = "administracion")
+    @Builder.Default
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private List<UnidadFuncional> unidadesFuncionales = new ArrayList<>();
+    private List<Consorcio> consorcios = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -56,12 +49,4 @@ public class Consorcio {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-    @ManyToOne
-    @JoinColumn(name = "created_by_id")
-    private Usuario createdBy;
-
-    @ManyToOne
-    @JoinColumn(name = "updated_by_id")
-    private Usuario updatedBy;
 }

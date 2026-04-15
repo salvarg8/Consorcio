@@ -88,6 +88,7 @@ public class UnidadFuncionalService {
         }
 
         unidad.setPropietario(propietario);
+        propietario.getUnidades().add(unidad);
         return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 
@@ -103,6 +104,7 @@ public class UnidadFuncionalService {
         }
 
         unidad.setInquilino(inquilino);
+        inquilino.getUnidades().add(unidad);
         return unidadFuncionalMapper.toResponseDTO(unidadFuncionalRepository.save(unidad));
     }
 

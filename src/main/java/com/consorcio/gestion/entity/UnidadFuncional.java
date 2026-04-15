@@ -10,19 +10,24 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "unidades_funcionales", uniqueConstraints = {@UniqueConstraint(columnNames = {"identificador", "consorcio_id"})})
@@ -62,6 +67,12 @@ public class UnidadFuncional {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inquilino_id")
     private Usuario inquilino;
+
+    @ManyToMany(mappedBy = "unidades", fetch = FetchType.LAZY)
+    @Builder.Default
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Set<Usuario> usuarios = new HashSet<>();
 
     @OneToMany(mappedBy = "unidadFuncional", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
