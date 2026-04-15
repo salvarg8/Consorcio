@@ -6,6 +6,8 @@ import lombok.Builder;
 public record ConsorcioRequestDTO(
         String nombre,
         String direccion,
-        String cuit
+        String ciudad,
+        String cuit,
+        Long administracionId
 ) {
 }

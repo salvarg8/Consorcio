@@ -7,7 +7,9 @@ public record ConsorcioResponseDTO(
         Long id,
         String nombre,
         String direccion,
+        String ciudad,
         String cuit,
-        boolean activo
+        boolean activo,
+        Long administracionId
 ) {
 }

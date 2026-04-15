@@ -16,6 +16,7 @@ public class ConsorcioMapper {
         Consorcio consorcio = new Consorcio();
         consorcio.setNombre(dto.nombre());
         consorcio.setDireccion(dto.direccion());
+        consorcio.setCiudad(dto.ciudad());
         consorcio.setCuit(dto.cuit());
         return consorcio;
     }
@@ -29,8 +30,10 @@ public class ConsorcioMapper {
                 .id(entity.getId())
                 .nombre(entity.getNombre())
                 .direccion(entity.getDireccion())
+                .ciudad(entity.getCiudad())
                 .cuit(entity.getCuit())
                 .activo(entity.isActivo())
+                .administracionId(entity.getAdministracion() != null ? entity.getAdministracion().getId() : null)
                 .build();
     }
 }
