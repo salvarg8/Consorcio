@@ -20,7 +20,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,6 +35,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE liquidaciones_mensuales SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class LiquidacionMensual {
 
     @Id
@@ -56,6 +60,8 @@ public class LiquidacionMensual {
     @OneToMany(mappedBy = "liquidacionMensual", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<LiquidacionUnidad> liquidacionesUnidad = new ArrayList<>();
+
+    private boolean activo = true;
 
     @CreationTimestamp
     @Column(updatable = false)

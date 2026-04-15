@@ -15,7 +15,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -26,6 +28,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE liquidaciones_unidad SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class LiquidacionUnidad {
 
     @Id
@@ -54,6 +58,8 @@ public class LiquidacionUnidad {
 
     @Column(name = "total_pagar", nullable = false)
     private BigDecimal totalPagar;
+
+    private boolean activo = true;
 
     @CreationTimestamp
     @Column(updatable = false)

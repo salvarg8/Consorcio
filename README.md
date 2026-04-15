@@ -35,7 +35,7 @@ El proyecto sigue una arquitectura en capas clásica y limpia, con clara separac
 6. **Infraccion:** Multas aplicadas a una Unidad.
 7. **PagoPendiente:** Deudas (expensas u otros) de una Unidad. Gestiona estados de PENDIENTE, PAGADO y VENCIDO.
 
-*(Nota: Se emplea Soft Delete lógicamente mediante un campo booleano `activo/habilitado` en **TODO** el dominio, incluyendo la entidad Consorcio. Las entidades no se eliminan físicamente de la base de datos)*
+*(Nota: Se emplea Soft Delete lógico en las entidades de ciclo operativo y financiero: `Consorcio`, `Administracion`, `Usuario`, `UnidadFuncional`, `Amenity`, `Infraccion`, `ReservaAmenity`, `PagoPendiente`, `LiquidacionMensual` y `LiquidacionUnidad`. Estas entidades no se eliminan físicamente de la base de datos.)*
 
 ## Cómo Ejecutar el Proyecto
 
@@ -78,6 +78,21 @@ Todos los endpoints inician con `/api/v1`. El ID del Consorcio se obtiene implí
 - **Reservations:** `GET, POST /api/v1/reservations`, `PATCH /api/v1/reservations/{id}/confirm`, `PATCH /api/v1/reservations/{id}/cancel`
 - **Infractions:** `GET, POST /api/v1/infractions`, `PATCH /api/v1/infractions/{id}/status`
 - **Payments:** `GET, POST /api/v1/payments`, `PATCH /api/v1/payments/{id}/pay`
+
+
+## Convenciones de Diseño
+
+### Política de Servicios
+La capa de servicios sigue una política uniforme de **interfaz + implementación**:
+- Contrato: `*Service`
+- Implementación concreta: `*ServiceImpl`
+
+### Convención de Naming (Dominio/API)
+Se adopta una convención explícita para evitar ambigüedad:
+- **Dominio interno (entidades, DTOs, servicios):** español de negocio (`Consorcio`, `UnidadFuncional`, `PagoPendiente`, etc.).
+- **API pública (paths REST):** inglés consistente y estable (`/users`, `/units`, `/payments`, etc.).
+
+Esta combinación es intencional y forma parte del estándar del proyecto.
 
 ## Pruebas Unitarias
 El proyecto cuenta con testing unitario de la capa de Servicios empleando Mockito para aislar las dependencias (Repositorios).

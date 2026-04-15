@@ -17,7 +17,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +31,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE reservas_amenities SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class ReservaAmenity {
 
     @Id
@@ -61,6 +65,8 @@ public class ReservaAmenity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_creador_id", nullable = false)
     private Usuario usuarioCreador;
+
+    private boolean activo = true;
 
     @CreationTimestamp
     @Column(updatable = false)
