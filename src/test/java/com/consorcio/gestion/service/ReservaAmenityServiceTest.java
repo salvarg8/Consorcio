@@ -51,7 +51,7 @@ public class ReservaAmenityServiceTest {
     private ReservaMapper reservaMapper;
 
     @InjectMocks
-    private ReservaAmenityService reservaService;
+    private ReservaAmenityServiceImpl reservaService;
 
     private ReservaRequestDTO requestDTO;
     private UnidadFuncional unidad;

@@ -49,7 +49,7 @@ public class UnidadFuncionalServiceTest {
     private UnidadFuncionalMapper unidadFuncionalMapper;
 
     @InjectMocks
-    private UnidadFuncionalService unidadFuncionalService;
+    private UnidadFuncionalServiceImpl unidadFuncionalService;
 
     private UnidadFuncionalRequestDTO requestDTO;
     private UnidadFuncional unidadEntity;

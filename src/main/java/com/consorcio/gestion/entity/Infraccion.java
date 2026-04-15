@@ -18,7 +18,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -30,6 +32,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE infracciones SET activo = false WHERE id = ?")
+@Where(clause = "activo = true")
 public class Infraccion {
 
     @Id
@@ -54,6 +58,8 @@ public class Infraccion {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoInfraccion estado;
+
+    private boolean activo = true;
 
     @CreationTimestamp
     @Column(updatable = false)

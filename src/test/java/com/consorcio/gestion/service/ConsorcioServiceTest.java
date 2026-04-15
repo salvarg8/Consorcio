@@ -39,7 +39,7 @@ class ConsorcioServiceTest {
     private SecurityService securityService;
 
     @InjectMocks
-    private ConsorcioService consorcioService;
+    private ConsorcioServiceImpl consorcioService;
 
     @Test
     void getConsorcioIdsForAuthenticatedAdmin_DeberiaRetornarIds() {

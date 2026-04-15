@@ -40,7 +40,7 @@ public class InfraccionServiceTest {
     private InfraccionMapper infraccionMapper;
 
     @InjectMocks
-    private InfraccionService infraccionService;
+    private InfraccionServiceImpl infraccionService;
 
     private InfraccionRequestDTO requestDTO;
     private Infraccion infraccionEntity;

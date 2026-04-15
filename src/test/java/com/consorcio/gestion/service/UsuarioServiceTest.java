@@ -43,7 +43,7 @@ public class UsuarioServiceTest {
     private UsuarioMapper usuarioMapper;
 
     @InjectMocks
-    private UsuarioService usuarioService;
+    private UsuarioServiceImpl usuarioService;
 
     private UsuarioRequestDTO requestDTO;
     private Usuario usuarioEntity;

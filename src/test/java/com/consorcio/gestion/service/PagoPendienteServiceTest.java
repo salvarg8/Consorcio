@@ -39,7 +39,7 @@ public class PagoPendienteServiceTest {
     private PagoPendienteMapper pagoPendienteMapper;
 
     @InjectMocks
-    private PagoPendienteService pagoPendienteService;
+    private PagoPendienteServiceImpl pagoPendienteService;
 
     private PagoPendienteRequestDTO requestDTO;
     private PagoPendiente pagoEntity;
